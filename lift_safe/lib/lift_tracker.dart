@@ -28,7 +28,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   String buttonText = "Start Recording";
   String finishedList = "No data yet";
   String motivation = "";
-
+  bool audioPlayed = false;
   int timeSinceRepStart = 0;
   double minDist = 0;
   bool inRep = false;
@@ -88,7 +88,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         counter = 0;
         inRep = false;
         minDist = 0;
-
+        audioPlayed = false;
         buttonText = "Stop Recording";
       });
     } else {
@@ -152,6 +152,7 @@ class _LiftTrackerState extends State<LiftTracker> {
           counter = 0;
           inRep = true;
           motivation = "";
+          audioPlayed = false;
         } else if (_velocities[_velocities.length - 1].abs() < 0.2 &&
             inRep == true) {
           if (counter >= 2) {
@@ -164,6 +165,10 @@ class _LiftTrackerState extends State<LiftTracker> {
           counter = 0;
           if (_times[_times.length - 1] - timeSinceRepStart > 1000000) {
             motivation = "You can dew it!!!";
+            if (!audioPlayed) {
+              player.play("test.wav");
+              audioPlayed = true;
+            }
           }
         }
       });
