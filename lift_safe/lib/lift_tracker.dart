@@ -88,6 +88,32 @@ class _LiftTrackerState extends State<LiftTracker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('LiftSafe'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.help_outline_outlined),
+            tooltip: 'Show Instructions',
+            onPressed: () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                title: const Text('AlertDialog Title'),
+                content: const Text('AlertDialog description'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancel'),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
       drawer: NavBar(),
       body: Container(
           padding: const EdgeInsets.only(top: 20), child: _buildSuggestions()),
