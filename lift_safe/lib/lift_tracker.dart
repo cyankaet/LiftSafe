@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 
+import 'sidebar.dart';
+
 class LiftTracker extends StatefulWidget {
   const LiftTracker({Key? key}) : super(key: key);
 
@@ -29,8 +31,11 @@ class _LiftTrackerState extends State<LiftTracker> {
           Expanded(
             /*1*/
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Text("LiftSafe",
+                    textScaleFactor: 5.0,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 _accelVal(userAccelerometer?[0], gyroscope?[0]),
                 _accelVal(userAccelerometer?[1], gyroscope?[1]),
                 _accelVal(userAccelerometer?[2], gyroscope?[2]),
@@ -43,17 +48,6 @@ class _LiftTrackerState extends State<LiftTracker> {
           /*3*/
         ],
       ),
-    );
-  }
-
-  Widget _buildRow(String? str, String? str2) {
-    if (str != null && str2 != null) {
-      return ListTile(
-        title: Text("Acceleration: " + str + " Gyroscope Value: " + str2),
-      );
-    }
-    return const ListTile(
-      title: Text("Not started."),
     );
   }
 
@@ -76,14 +70,9 @@ class _LiftTrackerState extends State<LiftTracker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Startup Name Generator'),
-      ),
-      body: Column(
-        children: [
-          _buildSuggestions(),
-        ],
-      ),
+      drawer: NavBar(),
+      body: Container(
+          padding: const EdgeInsets.only(top: 20), child: _buildSuggestions()),
     );
   }
 
