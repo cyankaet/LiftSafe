@@ -9,6 +9,7 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   double arm = 60.0;
+  int reps = 3;
   String exercise = 'Bench Press';
   String voice = 'American';
 
@@ -18,37 +19,37 @@ class _NavBarState extends State<NavBar> {
         child: ListView(
       children: [
         DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
+            decoration: const BoxDecoration(color: Colors.blue),
             child: Container(
-                child: Text("Settings",
+                child: const Text("Settings",
                     textScaleFactor: 2,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
                     )),
-                alignment: Alignment(0.0, 1.0))),
+                alignment: const Alignment(0.0, 1.0))),
         ListTile(
             title: TextFormField(
-                initialValue: '160',
-                autovalidate: true,
-                decoration: InputDecoration(
-                  icon: Icon(Icons.accessibility_outlined),
-                  labelText: 'Arm Length',
+                autovalidateMode: AutovalidateMode.always,
+                initialValue: '3',
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.sports_handball),
+                  labelText: 'Reps per Set',
                   border: OutlineInputBorder(),
                 ),
                 onFieldSubmitted: (text) {
-                  arm = double.parse(text);
+                  reps = int.parse(text);
                 },
                 validator: (value) {
                   if (value == null ||
                       value.isEmpty ||
-                      double.tryParse(value) == null) {
-                    return "Please enter a length in meters.";
+                      int.tryParse(value) == null) {
+                    return "Please enter an integer.";
                   }
                   return null;
                 })),
         Container(
-            alignment: Alignment(0.0, 1.0),
+            alignment: const Alignment(0.0, 1.0),
             child: DropdownButton<String>(
               value: exercise,
               items: <String>['Bench Press', 'Squat', 'Deadlift']
@@ -65,7 +66,7 @@ class _NavBarState extends State<NavBar> {
               },
             )),
         Container(
-            alignment: Alignment(0.0, 1.0),
+            alignment: const Alignment(0.0, 1.0),
             child: DropdownButton<String>(
               value: voice,
               items: <String>['American', 'British', 'Anime']
@@ -81,6 +82,26 @@ class _NavBarState extends State<NavBar> {
                 });
               },
             )),
+        ListTile(
+            title: TextFormField(
+                autovalidateMode: AutovalidateMode.always,
+                initialValue: '160',
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.accessibility_outlined),
+                  labelText: 'Arm Length',
+                  border: OutlineInputBorder(),
+                ),
+                onFieldSubmitted: (text) {
+                  arm = double.parse(text);
+                },
+                validator: (value) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      double.tryParse(value) == null) {
+                    return "Please enter a length in meters.";
+                  }
+                  return null;
+                })),
       ],
     ));
   }
