@@ -33,15 +33,15 @@ class _LiftTrackerState extends State<LiftTracker> {
         if (index >= l) {
           return const Divider();
         }
-        return _buildRow(gyroscope?[index]);
+        return _buildRow(userAccelerometer?[index], gyroscope?[index]);
       },
     );
   }
 
-  Widget _buildRow(String? str) {
-    if (str != null) {
+  Widget _buildRow(String? str, String? str2) {
+    if (str != null && str2 != null) {
       return ListTile(
-        title: Text(str),
+        title: Text("Acceleration: " + str + " Gyroscope Value: " + str2),
       );
     }
     return const ListTile(
