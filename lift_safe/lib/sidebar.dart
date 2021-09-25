@@ -48,40 +48,49 @@ class _NavBarState extends State<NavBar> {
                   }
                   return null;
                 })),
-        Container(
-            alignment: const Alignment(0.0, 1.0),
-            child: DropdownButton<String>(
-              value: exercise,
-              items: <String>['Bench Press', 'Squat', 'Deadlift']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? value) {
-                setState(() {
-                  exercise = value!;
-                });
-              },
-            )),
-        Container(
-            alignment: const Alignment(0.0, 1.0),
-            child: DropdownButton<String>(
-              value: voice,
-              items: <String>['American', 'British', 'Anime']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? value) {
-                setState(() {
-                  voice = value!;
-                });
-              },
-            )),
+        ListTile(
+            // alignment: const Alignment(0.0, 1.0),
+            title: DropdownButtonFormField<String>(
+          decoration: const InputDecoration(
+            icon: Icon(Icons.fitness_center),
+            labelText: 'Exercise',
+            border: OutlineInputBorder(),
+          ),
+          value: exercise,
+          items: <String>['Bench Press', 'Squat', 'Deadlift']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? value) {
+            setState(() {
+              exercise = value!;
+            });
+          },
+        )),
+        ListTile(
+            title: DropdownButtonFormField<String>(
+          value: voice,
+          decoration: const InputDecoration(
+            icon: Icon(Icons.record_voice_over),
+            labelText: 'Trainer Voice',
+            border: OutlineInputBorder(),
+          ),
+          items: <String>['American', 'British', 'Anime']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? value) {
+            setState(() {
+              voice = value!;
+            });
+          },
+        )),
         ListTile(
             title: TextFormField(
                 autovalidateMode: AutovalidateMode.always,
