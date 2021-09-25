@@ -14,6 +14,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
   List<double> _userAccelerometerZValues = [];
+  Stopwatch _stopwatch = new Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
   String finishedList = "No data yet";
@@ -51,6 +52,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   _startRecording() {
     if (buttonText == "Start Recording") {
       setState(() {
+        _stopwatch.start();
         _streamSubscriptions[0].resume();
         _streamSubscriptions[1].resume();
         buttonText = "Stop Recording";
@@ -59,6 +61,7 @@ class _LiftTrackerState extends State<LiftTracker> {
       setState(() {
         _streamSubscriptions[0].pause();
         _streamSubscriptions[1].pause();
+        _stopwatch.stop();
         buttonText = "Start Recording";
         finishedList = _userAccelerometerZValues
             .map((double v) => v.toStringAsFixed(1))
@@ -105,6 +108,7 @@ class _LiftTrackerState extends State<LiftTracker> {
           setState(() {
             _gyroscopeValues = <double>[event.x, event.y, event.z];
           });
+          print('Time is now ${_stopwatch.elapsed}');
         },
       ),
     );
