@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 import 'sidebar.dart';
 
@@ -16,6 +17,8 @@ class _LiftTrackerState extends State<LiftTracker> {
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
   List<double> _userAccelerometerZValues = [];
+  List<double> _times = [];
+  Stopwatch _stopwatch = new Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
   String finishedList = "No data yet";
@@ -56,6 +59,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   _startRecording() {
     if (buttonText == "Start Recording") {
       setState(() {
+        _stopwatch.start();
         _streamSubscriptions[0].resume();
         _streamSubscriptions[1].resume();
         buttonText = "Stop Recording";
@@ -64,6 +68,7 @@ class _LiftTrackerState extends State<LiftTracker> {
       setState(() {
         _streamSubscriptions[0].pause();
         _streamSubscriptions[1].pause();
+        _stopwatch.stop();
         buttonText = "Start Recording";
         finishedList = _userAccelerometerZValues
             .map((double v) => v.toStringAsFixed(1))
@@ -92,8 +97,9 @@ class _LiftTrackerState extends State<LiftTracker> {
   @override
   void initState() {
     super.initState();
-    _streamSubscriptions
-        .add(userAccelerometerEvents.listen((UserAccelerometerEvent event) {
+    _streamSubscriptions.add(userAccelerometerEvents
+        .audit(Duration(seconds: 1))
+        .listen((UserAccelerometerEvent event) {
       setState(() {
         _userAccelerometerValues = <double>[event.x, event.y, event.z];
         _userAccelerometerZValues.add(_userAccelerometerValues?[2] ?? -20000);
@@ -105,6 +111,7 @@ class _LiftTrackerState extends State<LiftTracker> {
           setState(() {
             _gyroscopeValues = <double>[event.x, event.y, event.z];
           });
+          print('Time is now ${_stopwatch.elapsed}');
         },
       ),
     );
