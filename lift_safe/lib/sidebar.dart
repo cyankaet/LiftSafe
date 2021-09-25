@@ -10,8 +10,8 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
   double arm = 60.0;
   int reps = 3;
-  String exercise = 'Bench Press';
-  String voice = 'American';
+  static String exercise = 'Bench Press';
+  static String voice = 'American';
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class _NavBarState extends State<NavBar> {
             labelText: 'Trainer Voice',
             border: OutlineInputBorder(),
           ),
-          items: <String>['American', 'British', 'Anime']
+          items: <String>['American', 'British', 'Anime', 'test.wav']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -88,6 +88,7 @@ class _NavBarState extends State<NavBar> {
           onChanged: (String? value) {
             setState(() {
               voice = value!;
+              Navigator.pop(context, voice);
             });
           },
         )),

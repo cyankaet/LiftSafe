@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'sidebar.dart' as sidebar;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +26,8 @@ class _LiftTrackerState extends State<LiftTracker> {
   Stopwatch _stopwatch = Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
-  String finishedList = "No data yet";
   String motivation = "";
+  String audio = "test.wav";
 
   int timeSinceRepStart = 0;
   double minDist = 0;
@@ -56,15 +57,15 @@ class _LiftTrackerState extends State<LiftTracker> {
                 _accelVal(userAccelerometer?[0], gyroscope?[0]),
                 _accelVal(userAccelerometer?[1], gyroscope?[1]),
                 _accelVal(userAccelerometer?[2], gyroscope?[2]),
-                // Text(finishedList),
                 Text("Min Distance: $minDist"),
                 Text("Reps: $numReps"),
                 Text(motivation),
                 TextButton(child: Text(buttonText), onPressed: _startRecording),
                 TextButton(
-                    child: Text("play test"),
+                    child: Text(audio),
                     onPressed: () {
-                      player.play("test.wav");
+                      _getAudio(context);
+                      player.play(audio);
                     }),
                 IconButton(
                   icon: start
@@ -81,6 +82,14 @@ class _LiftTrackerState extends State<LiftTracker> {
         ],
       ),
     );
+  }
+
+  _getAudio(BuildContext context) async {
+    final String voice = await Navigator.push(
+        context, MaterialPageRoute(builder: (_) => NavBar()));
+    setState(() {
+      audio = voice;
+    });
   }
 
   _startRecording() {
@@ -112,10 +121,6 @@ class _LiftTrackerState extends State<LiftTracker> {
         print(numReps);
 
         buttonText = "Start Recording";
-        finishedList = _userAccelerometerZValues
-            .map((double v) => v.toStringAsFixed(1))
-            .toList()
-            .join(", ");
       });
     }
   }
