@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -17,12 +18,22 @@ class _LiftTrackerState extends State<LiftTracker> {
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
   List<double> _userAccelerometerZValues = [];
-  List<double> _times = [];
-  Stopwatch _stopwatch = new Stopwatch();
+  List<double> _velocities = [0.0];
+  List<double> tot_velocities = [0.0];
+  int numReps = 0;
+  List<int> _times = [0];
+  Stopwatch _stopwatch = Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
   String finishedList = "No data yet";
-  int delta_t = 0;
+  String motivation = "";
+
+  int timeSinceRepStart = 0;
+  double minDist = 0;
+  bool inRep = false;
+  int counter = 0;
+  bool start = false;
+  static AudioCache player = AudioCache();
 
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
@@ -45,8 +56,24 @@ class _LiftTrackerState extends State<LiftTracker> {
                 _accelVal(userAccelerometer?[0], gyroscope?[0]),
                 _accelVal(userAccelerometer?[1], gyroscope?[1]),
                 _accelVal(userAccelerometer?[2], gyroscope?[2]),
-                Text(finishedList),
+                // Text(finishedList),
+                Text("Min Distance: $minDist"),
+                Text("Reps: $numReps"),
+                Text(motivation),
                 TextButton(child: Text(buttonText), onPressed: _startRecording),
+                TextButton(
+                    child: Text("play test"),
+                    onPressed: () {
+                      player.play("test.wav");
+                    }),
+                IconButton(
+                  icon: start
+                      ? Icon(Icons.pause_circle_outline, size: 70)
+                      : Icon(Icons.play_circle_outline, size: 70),
+                  onPressed: () {
+                    start = !start;
+                  },
+                )
               ],
             ),
           ),
@@ -59,9 +86,17 @@ class _LiftTrackerState extends State<LiftTracker> {
   _startRecording() {
     if (buttonText == "Start Recording") {
       setState(() {
+        _stopwatch = Stopwatch();
         _stopwatch.start();
         _streamSubscriptions[0].resume();
         _streamSubscriptions[1].resume();
+        _userAccelerometerZValues = [];
+        _times = [];
+        numReps = 0;
+        counter = 0;
+        inRep = false;
+        minDist = 0;
+
         buttonText = "Stop Recording";
       });
     } else {
@@ -69,6 +104,13 @@ class _LiftTrackerState extends State<LiftTracker> {
         _streamSubscriptions[0].pause();
         _streamSubscriptions[1].pause();
         _stopwatch.stop();
+        List<double> tot_velocities = [];
+        tot_velocities.add(0.0);
+        for (int i = 1; i < _velocities.length; i++) {
+          tot_velocities.add(tot_velocities[i - 1] + _velocities[i]);
+        }
+        print(numReps);
+
         buttonText = "Start Recording";
         finishedList = _userAccelerometerZValues
             .map((double v) => v.toStringAsFixed(1))
@@ -82,7 +124,7 @@ class _LiftTrackerState extends State<LiftTracker> {
     if (str != null && str2 != null) {
       return Text("Acceleration: " + str + " Gyroscope Value: " + str2);
     }
-    return Text("Start Recording to get Values");
+    return const Text("Start Recording to get Values");
   }
 
   @override
@@ -124,11 +166,40 @@ class _LiftTrackerState extends State<LiftTracker> {
   void initState() {
     super.initState();
     _streamSubscriptions.add(userAccelerometerEvents
-        .audit(Duration(seconds: 1))
+        .audit(const Duration(milliseconds: 100))
         .listen((UserAccelerometerEvent event) {
       setState(() {
         _userAccelerometerValues = <double>[event.x, event.y, event.z];
         _userAccelerometerZValues.add(_userAccelerometerValues?[2] ?? -20000);
+        _times.add(_stopwatch.elapsedMicroseconds);
+        _velocities.add(0.5 *
+            (_times[_times.length - 1] - _times[_times.length - 2]) /
+            1000000 *
+            (_userAccelerometerZValues[_userAccelerometerZValues.length - 1] +
+                _userAccelerometerZValues[
+                    _userAccelerometerZValues.length - 2]));
+        tot_velocities.add(tot_velocities[tot_velocities.length - 1] +
+            _velocities[_velocities.length - 1]);
+        if (_velocities[_velocities.length - 1].abs() > 0.2 && inRep == false) {
+          timeSinceRepStart = _times[_times.length - 1];
+          numReps++;
+          counter = 0;
+          inRep = true;
+          motivation = "";
+        } else if (_velocities[_velocities.length - 1].abs() < 0.2 &&
+            inRep == true) {
+          if (counter >= 2) {
+            inRep = false;
+            counter = 0;
+          } else {
+            counter++;
+          }
+        } else {
+          counter = 0;
+          if (_times[_times.length - 1] - timeSinceRepStart > 1000000) {
+            motivation = "You can dew it!!!";
+          }
+        }
       });
     }));
     _streamSubscriptions.add(
@@ -137,7 +208,6 @@ class _LiftTrackerState extends State<LiftTracker> {
           setState(() {
             _gyroscopeValues = <double>[event.x, event.y, event.z];
           });
-          print('Time is now ${_stopwatch.elapsed}');
         },
       ),
     );
