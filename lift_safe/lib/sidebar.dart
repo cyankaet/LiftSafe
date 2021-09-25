@@ -8,8 +8,10 @@ class NavBar extends StatefulWidget {
 }
 
 class _NavBarState extends State<NavBar> {
-  double height = 120;
-  String wingspan = "hi";
+  double arm = 60.0;
+  String exercise = 'Bench Press';
+  String voice = 'American';
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -26,18 +28,59 @@ class _NavBarState extends State<NavBar> {
                     )),
                 alignment: Alignment(0.0, 1.0))),
         ListTile(
-            leading: Icon(Icons.message),
-            title: const TextField(
-                decoration: const InputDecoration(
-                    hintText: "height"))), // TODO ft/inches input
-        ListTile(
-            leading: Icon(Icons.accessibility_outlined),
-            title: TextField(
-                decoration: const InputDecoration(hintText: "wingspan"),
-                onSubmitted: (text) {
-                  wingspan = text;
+            title: TextFormField(
+                initialValue: '160',
+                autovalidate: true,
+                decoration: InputDecoration(
+                  icon: Icon(Icons.accessibility_outlined),
+                  labelText: 'Arm Length',
+                  border: OutlineInputBorder(),
+                ),
+                onFieldSubmitted: (text) {
+                  arm = double.parse(text);
+                },
+                validator: (value) {
+                  if (value == null ||
+                      value.isEmpty ||
+                      double.tryParse(value) == null) {
+                    return "Please enter a length in meters.";
+                  }
+                  return null;
                 })),
-        Text(wingspan),
+        Container(
+            alignment: Alignment(0.0, 1.0),
+            child: DropdownButton<String>(
+              value: exercise,
+              items: <String>['Bench Press', 'Squat', 'Deadlift']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  exercise = value!;
+                });
+              },
+            )),
+        Container(
+            alignment: Alignment(0.0, 1.0),
+            child: DropdownButton<String>(
+              value: voice,
+              items: <String>['American', 'British', 'Anime']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  voice = value!;
+                });
+              },
+            )),
       ],
     ));
   }
