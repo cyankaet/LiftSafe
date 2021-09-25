@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +32,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   double minDist = 0;
   bool inRep = false;
   int counter = 0;
+  bool start = false;
   static AudioCache player = AudioCache();
 
   Widget _buildSuggestions() {
@@ -65,7 +65,15 @@ class _LiftTrackerState extends State<LiftTracker> {
                     child: Text("play test"),
                     onPressed: () {
                       player.play("test.wav");
-                    })
+                    }),
+                IconButton(
+                  icon: start
+                      ? Icon(Icons.pause_circle_outline, size: 70)
+                      : Icon(Icons.play_circle_outline, size: 70),
+                  onPressed: () {
+                    start = !start;
+                  },
+                )
               ],
             ),
           ),
