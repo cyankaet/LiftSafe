@@ -21,6 +21,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   List<double> _velocities = [0.0];
   List<double> tot_velocities = [0.0];
   int numReps = 0;
+  int numEgo = 0;
   List<int> _times = [0];
   Stopwatch _stopwatch = Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
@@ -183,6 +184,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         if (_velocities[_velocities.length - 1].abs() > 0.2 && inRep == false) {
           timeSinceRepStart = _times[_times.length - 1];
           numReps++;
+          //CALL MY FUNCTION
           counter = 0;
           inRep = true;
           motivation = "";
@@ -192,18 +194,20 @@ class _LiftTrackerState extends State<LiftTracker> {
           if (counter >= 2) {
             inRep = false;
             counter = 0;
+            if (_times[_times.length - 1] - timeSinceRepStart < 3000000) {
+              motivation = "You can dew it!!!";
+              numEgo++;
+              //CALL MY FUNCTION
+              if (!audioPlayed) {
+                player.play("test.wav");
+                audioPlayed = true;
+              }
+            }
           } else {
             counter++;
           }
         } else {
           counter = 0;
-          if (_times[_times.length - 1] - timeSinceRepStart > 1000000) {
-            motivation = "You can dew it!!!";
-            if (!audioPlayed) {
-              player.play("test.wav");
-              audioPlayed = true;
-            }
-          }
         }
       });
     }));
