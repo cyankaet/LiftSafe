@@ -73,9 +73,6 @@ class _LiftTrackerState extends State<LiftTracker> {
         _streamSubscriptions[0].pause();
         _streamSubscriptions[1].pause();
         _stopwatch.stop();
-        print(_userAccelerometerZValues.length == _times.length);
-        print(
-            _stopwatch.elapsedMilliseconds / _userAccelerometerZValues.length);
         List<double> _velocities = [];
         _velocities.add(0.0);
         print(_times[0]);
@@ -99,16 +96,16 @@ class _LiftTrackerState extends State<LiftTracker> {
               1000000 *
               (_velocities[i] + _velocities[i - 1]));
         }
-        List<double> tot_displacement = [];
-        tot_displacement.add(0.0);
+        List<double> totDisplacement = [];
+        totDisplacement.add(0.0);
         for (int i = 1; i < _displacement.length; i++) {
-          tot_displacement.add(tot_displacement[i - 1] + _displacement[i]);
+          totDisplacement.add(totDisplacement[i - 1] + _displacement[i]);
         }
         print(_userAccelerometerZValues);
         print(tot_velocities);
-        print(tot_displacement);
+        print(totDisplacement);
         print(_times);
-        minDist = tot_displacement.reduce(min);
+        minDist = totDisplacement.reduce(min);
         buttonText = "Start Recording";
         finishedList = _userAccelerometerZValues
             .map((double v) => v.toStringAsFixed(1))
@@ -122,7 +119,7 @@ class _LiftTrackerState extends State<LiftTracker> {
     if (str != null && str2 != null) {
       return Text("Acceleration: " + str + " Gyroscope Value: " + str2);
     }
-    return Text("Start Recording to get Values");
+    return const Text("Start Recording to get Values");
   }
 
   @override
