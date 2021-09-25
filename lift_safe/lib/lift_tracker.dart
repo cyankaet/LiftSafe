@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -24,6 +25,8 @@ class _LiftTrackerState extends State<LiftTracker> {
   String buttonText = "Start Recording";
   String finishedList = "No data yet";
   double minDist = 0;
+  static AudioCache player = AudioCache();
+
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
         ?.map((double v) => v.toStringAsFixed(1))
@@ -48,6 +51,11 @@ class _LiftTrackerState extends State<LiftTracker> {
                 // Text(finishedList),
                 Text("Min Distance: $minDist"),
                 TextButton(child: Text(buttonText), onPressed: _startRecording),
+                TextButton(
+                    child: Text("play test"),
+                    onPressed: () {
+                      player.play("test.wav");
+                    })
               ],
             ),
           ),
