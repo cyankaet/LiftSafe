@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 
@@ -13,6 +14,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
+  String test = 'testing';
 
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
@@ -20,21 +22,27 @@ class _LiftTrackerState extends State<LiftTracker> {
         .toList();
     final List<String>? gyroscope =
         _gyroscopeValues?.map((double v) => v.toStringAsFixed(1)).toList();
-    return ListView.builder(
+    return Container(
       padding: const EdgeInsets.all(16.0),
-      itemBuilder: /*1*/ (context, i) {
-        if (i.isOdd) return const Divider(); /*2*/
-
-        final index = i ~/ 2; /*3*/
-        final l = gyroscope?.length;
-        if (l == null) {
-          return const Divider();
-        }
-        if (index >= l) {
-          return const Divider();
-        }
-        return _buildRow(userAccelerometer?[index], gyroscope?[index]);
-      },
+      child: Row(
+        children: [
+          Expanded(
+            /*1*/
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _accelVal(userAccelerometer?[0], gyroscope?[0]),
+                _accelVal(userAccelerometer?[1], gyroscope?[1]),
+                _accelVal(userAccelerometer?[2], gyroscope?[2]),
+                Text(test),
+                TextButton(
+                    child: Text("Start recording"), onPressed: _startRecording)
+              ],
+            ),
+          ),
+          /*3*/
+        ],
+      ),
     );
   }
 
@@ -45,8 +53,24 @@ class _LiftTrackerState extends State<LiftTracker> {
       );
     }
     return const ListTile(
-      title: Text("Accelerometer values finished."),
+      title: Text("Not started."),
     );
+  }
+
+  _startRecording() {
+    setState(() {
+      if (test == 'start') {
+        test = 'no';
+      } else
+        test = 'start';
+    });
+  }
+
+  Widget _accelVal(String? str, String? str2) {
+    if (str != null && str2 != null) {
+      return Text("Acceleration: " + str + " Gyroscope Value: " + str2);
+    }
+    return Text("Accelerometer values finished.");
   }
 
   @override
@@ -55,7 +79,11 @@ class _LiftTrackerState extends State<LiftTracker> {
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
       ),
-      body: _buildSuggestions(),
+      body: Column(
+        children: [
+          _buildSuggestions(),
+        ],
+      ),
     );
   }
 
