@@ -15,8 +15,11 @@ class LiftTracker extends StatefulWidget {
 class _LiftTrackerState extends State<LiftTracker> {
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
+  List<double> _userAccelerometerZValues = [];
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
-  String test = 'testing';
+  String buttonText = "Start Recording";
+  String finishedList = "No data yet";
+  int delta_t = 0;
 
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
@@ -39,9 +42,8 @@ class _LiftTrackerState extends State<LiftTracker> {
                 _accelVal(userAccelerometer?[0], gyroscope?[0]),
                 _accelVal(userAccelerometer?[1], gyroscope?[1]),
                 _accelVal(userAccelerometer?[2], gyroscope?[2]),
-                Text(test),
-                TextButton(
-                    child: Text("Start recording"), onPressed: _startRecording)
+                Text(finishedList),
+                TextButton(child: Text(buttonText), onPressed: _startRecording),
               ],
             ),
           ),
@@ -52,19 +54,30 @@ class _LiftTrackerState extends State<LiftTracker> {
   }
 
   _startRecording() {
-    setState(() {
-      if (test == 'start') {
-        test = 'no';
-      } else
-        test = 'start';
-    });
+    if (buttonText == "Start Recording") {
+      setState(() {
+        _streamSubscriptions[0].resume();
+        _streamSubscriptions[1].resume();
+        buttonText = "Stop Recording";
+      });
+    } else {
+      setState(() {
+        _streamSubscriptions[0].pause();
+        _streamSubscriptions[1].pause();
+        buttonText = "Start Recording";
+        finishedList = _userAccelerometerZValues
+            .map((double v) => v.toStringAsFixed(1))
+            .toList()
+            .join(", ");
+      });
+    }
   }
 
   Widget _accelVal(String? str, String? str2) {
     if (str != null && str2 != null) {
       return Text("Acceleration: " + str + " Gyroscope Value: " + str2);
     }
-    return Text("Accelerometer values finished.");
+    return Text("Start Recording to get Values");
   }
 
   @override
@@ -83,6 +96,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         .add(userAccelerometerEvents.listen((UserAccelerometerEvent event) {
       setState(() {
         _userAccelerometerValues = <double>[event.x, event.y, event.z];
+        _userAccelerometerZValues.add(_userAccelerometerValues?[2] ?? -20000);
       });
     }));
     _streamSubscriptions.add(
@@ -94,5 +108,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         },
       ),
     );
+    _streamSubscriptions[0].pause();
+    _streamSubscriptions[1].pause();
   }
 }
