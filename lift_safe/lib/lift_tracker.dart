@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -32,6 +33,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   double minDist = 0;
   bool inRep = false;
   int counter = 0;
+  static AudioCache player = AudioCache();
 
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
@@ -59,6 +61,11 @@ class _LiftTrackerState extends State<LiftTracker> {
                 Text("Reps: $numReps"),
                 Text(motivation),
                 TextButton(child: Text(buttonText), onPressed: _startRecording),
+                TextButton(
+                    child: Text("play test"),
+                    onPressed: () {
+                      player.play("test.wav");
+                    })
               ],
             ),
           ),
@@ -94,26 +101,6 @@ class _LiftTrackerState extends State<LiftTracker> {
         for (int i = 1; i < _velocities.length; i++) {
           tot_velocities.add(tot_velocities[i - 1] + _velocities[i]);
         }
-        // List<double> _displacement = [];
-        // _displacement.add(0.0);
-        // for (int i = 1; i < _velocities.length; i++) {
-        //   _displacement.add(0.5 *
-        //       (_times[i] - _times[i - 1]) /
-        //       1000000 *
-        //       (_velocities[i] + _velocities[i - 1]));
-        // }
-        // List<double> totDisplacement = [];
-        // totDisplacement.add(0.0);
-        // for (int i = 1; i < _displacement.length; i++) {
-        //   totDisplacement.add(totDisplacement[i - 1] + _displacement[i]);
-        // }
-        // print(_userAccelerometerZValues);
-        // print(tot_velocities);
-        // print(totDisplacement);
-        // print(_times);
-        // minDist = totDisplacement.reduce(min);
-
-        // print(_velocities);
         print(numReps);
 
         buttonText = "Start Recording";
