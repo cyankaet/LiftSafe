@@ -30,7 +30,8 @@ class _LiftTrackerState extends State<LiftTracker> {
   String textHolder = (100.0).toString() + '%';
   changeText() {
     setState(() {
-      textHolder = (100 * ((numReps - numEgo) / numReps)).toString() + "%";
+      textHolder =
+          (100 * ((numReps - numEgo) / numReps)).toInt().toString() + "%";
     });
   }
 
