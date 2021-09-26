@@ -133,13 +133,6 @@ class _LiftTrackerState extends State<LiftTracker> {
     }
   }
 
-  Widget _accelVal(String? str, String? str2) {
-    if (str != null && str2 != null) {
-      return Text("Acceleration: " + str + " Gyroscope Value: " + str2);
-    }
-    return const Text("Start Recording to get Values");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,20 +199,20 @@ class _LiftTrackerState extends State<LiftTracker> {
           if (counter >= 2) {
             inRep = false;
             counter = 0;
+            if (_times[_times.length - 1] - timeSinceRepStart < 3000000) {
+              motivation = "You can dew it!!!";
+              numEgo++;
+              changeText();
+              if (!audioPlayed) {
+                player.play("test.wav");
+                audioPlayed = true;
+              }
+            }
           } else {
             counter++;
           }
         } else {
           counter = 0;
-          if (_times[_times.length - 1] - timeSinceRepStart < 3000000) {
-            motivation = "You can dew it!!!";
-            numEgo++;
-            changeText();
-            if (!audioPlayed) {
-              player.play(audioFiles[audio]);
-              audioPlayed = true;
-            }
-          }
         }
       });
     }));
