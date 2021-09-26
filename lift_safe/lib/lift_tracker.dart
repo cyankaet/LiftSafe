@@ -64,8 +64,8 @@ class _LiftTrackerState extends State<LiftTracker> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MaterialButton(
-                  height: 350,
-                  minWidth: 350,
+                  height: 275,
+                  minWidth: 275,
                   color: Colors.blue,
                   shape: CircleBorder(),
                   onPressed: _startRecording,
@@ -73,7 +73,7 @@ class _LiftTrackerState extends State<LiftTracker> {
                     padding: const EdgeInsets.all(100),
                     child: Text(
                       '$textHolder',
-                      style: TextStyle(color: Colors.white, fontSize: 50),
+                      style: TextStyle(color: Colors.white, fontSize: 40),
                     ),
                   ),
                 )
