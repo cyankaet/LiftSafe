@@ -132,10 +132,10 @@ class _LiftTrackerState extends State<LiftTracker> {
         _stopwatch.stop();
         List<double> tot_velocities = [];
         tot_velocities.add(0.0);
+        textHolder = "Start";
         for (int i = 1; i < _velocities.length; i++) {
           tot_velocities.add(tot_velocities[i - 1] + _velocities[i]);
         }
-        print(numReps);
 
         buttonText = "Start Recording";
       });
