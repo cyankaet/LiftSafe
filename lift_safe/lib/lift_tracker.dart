@@ -39,7 +39,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   }
 
   String motivation = "";
-  String audio = "American";
+  String audio = "None";
   double arm = 60.0;
   int reps = 3;
   String exercise = 'Bench Press';
@@ -235,7 +235,7 @@ class _LiftTrackerState extends State<LiftTracker> {
               labelText: 'Trainer Voice',
               border: OutlineInputBorder(),
             ),
-            items: <String>['American', 'British', 'Japanese', 'None']
+            items: <String>['None', 'American', 'British', 'Japanese']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
