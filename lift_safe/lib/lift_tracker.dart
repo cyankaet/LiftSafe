@@ -210,7 +210,7 @@ class _LiftTrackerState extends State<LiftTracker> {
               numEgo++;
               changeText();
               if (!audioPlayed) {
-                player.play("test.wav");
+                player.play(audioFiles[audio]);
                 audioPlayed = true;
               }
             }
