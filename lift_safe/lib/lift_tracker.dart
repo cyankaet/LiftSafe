@@ -16,7 +16,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   final Map audioFiles = {
     'American': 'just-do-it.mp3',
     'British': 'you-donkey.mp3',
-    'Japanese': 'test.wav',
+    'Japanese': 'baka.mp3',
     'None': '1-second-of-silence.mp3'
   };
   List<double>? _userAccelerometerValues;
