@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
-import 'sidebar.dart' as sidebar;
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +26,18 @@ class _LiftTrackerState extends State<LiftTracker> {
   List<double> _velocities = [0.0];
   List<double> tot_velocities = [0.0];
   int numReps = 0;
+  int numEgo = 0;
   List<int> _times = [0];
   Stopwatch _stopwatch = Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
-  String textHolder = (100.0).toString() + '%';
+  String textHolder = (100).toString() + '%';
+  changeText() {
+    setState(() {
+      textHolder =
+          (100 * (numReps - numEgo) / numReps).toInt().toString() + "%";
+    });
+  }
 
   String motivation = "";
   String audio = "American";
@@ -44,6 +49,9 @@ class _LiftTrackerState extends State<LiftTracker> {
   int counter = 0;
   bool start = false;
   static AudioCache player = AudioCache();
+
+  final ButtonStyle style =
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
@@ -60,30 +68,20 @@ class _LiftTrackerState extends State<LiftTracker> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("LiftSafe",
-                    textScaleFactor: 5.0,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                _accelVal(userAccelerometer?[0], gyroscope?[0]),
-                _accelVal(userAccelerometer?[1], gyroscope?[1]),
-                _accelVal(userAccelerometer?[2], gyroscope?[2]),
-                Text("Min Distance: $minDist"),
-                Text("Reps: $numReps"),
-                Text(motivation),
-                TextButton(child: Text(buttonText), onPressed: _startRecording),
-                TextButton(
-                    child: Text("Play Current Audio"),
-                    onPressed: () {
-                      _getAudio(context);
-                      player.play(audioFiles[audio]);
-                    }),
-                IconButton(
-                  icon: start
-                      ? Icon(Icons.pause_circle_outline, size: 70)
-                      : Icon(Icons.play_circle_outline, size: 70),
-                  onPressed: () {
-                    start = !start;
-                  },
-                )
+                MaterialButton(
+                  height: 275,
+                  minWidth: 275,
+                  color: Colors.blue,
+                  shape: CircleBorder(),
+                  onPressed: _startRecording,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(
+                      '$textHolder',
+                      style: TextStyle(color: Colors.white, fontSize: 45),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -111,6 +109,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         _userAccelerometerZValues = [];
         _times = [];
         numReps = 0;
+        numEgo = 0;
         counter = 0;
         inRep = false;
         minDist = 0;
@@ -197,6 +196,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         if (_velocities[_velocities.length - 1].abs() > 0.2 && inRep == false) {
           timeSinceRepStart = _times[_times.length - 1];
           numReps++;
+          changeText();
           counter = 0;
           inRep = true;
           motivation = "";
@@ -211,8 +211,10 @@ class _LiftTrackerState extends State<LiftTracker> {
           }
         } else {
           counter = 0;
-          if (_times[_times.length - 1] - timeSinceRepStart > 1000000) {
+          if (_times[_times.length - 1] - timeSinceRepStart < 3000000) {
             motivation = "You can dew it!!!";
+            numEgo++;
+            changeText();
             if (!audioPlayed) {
               player.play(audioFiles[audio]);
               audioPlayed = true;

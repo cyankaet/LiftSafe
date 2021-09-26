@@ -67,8 +67,8 @@ flutter:
 
   assets:
     - assets/test.wav
-    - assets/you-donkey.mp3
     - assets/just-do-it.mp3
+    - assets/you-donkey.mp3
     - assets/absolutely-pathetic.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
