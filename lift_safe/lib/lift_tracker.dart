@@ -30,6 +30,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
   String textHolder = (100).toString() + '%';
+  String previousRepPercent = "";
   changeText() {
     setState(() {
       textHolder =
@@ -123,6 +124,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         minDist = 0;
         audioPlayed = false;
         buttonText = "Stop Recording";
+        textHolder = "Press to start";
       });
     } else {
       setState(() {
