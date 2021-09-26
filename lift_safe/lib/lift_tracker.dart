@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'sidebar.dart';
-
 class LiftTracker extends StatefulWidget {
   const LiftTracker({Key? key}) : super(key: key);
 
@@ -41,6 +39,10 @@ class _LiftTrackerState extends State<LiftTracker> {
 
   String motivation = "";
   String audio = "American";
+  double arm = 60.0;
+  int reps = 3;
+  String exercise = 'Bench Press';
+  // String voice = 'American';
 
   bool audioPlayed = false;
   int timeSinceRepStart = 0;
@@ -82,12 +84,12 @@ class _LiftTrackerState extends State<LiftTracker> {
                     ),
                   ),
                 ),
-                OutlinedButton(
-                  onPressed: () {
-                    _getAudio(context);
-                  },
-                  child: Text("Pick Trainer Voice"),
-                ),
+                // OutlinedButton(
+                //   onPressed: () {
+                //     _getAudio(context);
+                //   },
+                //   child: Text("Pick Trainer Voice"),
+                // ),
               ],
             ),
           ),
@@ -96,14 +98,14 @@ class _LiftTrackerState extends State<LiftTracker> {
       ),
     );
   }
-
-  _getAudio(BuildContext context) async {
-    final String voice = await Navigator.push(
-        context, MaterialPageRoute(builder: (_) => NavBar()));
-    setState(() {
-      audio = voice;
-    });
-  }
+  //
+  // _getAudio(BuildContext context) async {
+  //   final String voice = await Navigator.push(
+  //       context, MaterialPageRoute(builder: (_) => NavBar()));
+  //   setState(() {
+  //     audio = voice;
+  //   });
+  // }
 
   _startRecording() {
     if (buttonText == "Start Recording") {
@@ -168,7 +170,105 @@ class _LiftTrackerState extends State<LiftTracker> {
           ),
         ],
       ),
-      drawer: NavBar(),
+      drawer: Drawer(
+          child: ListView(
+        children: [
+          DrawerHeader(
+              decoration: const BoxDecoration(color: Colors.blue),
+              child: Container(
+                  child: const Text("Settings",
+                      textScaleFactor: 2,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      )),
+                  alignment: const Alignment(0.0, 1.0))),
+          ListTile(
+              title: TextFormField(
+                  autovalidateMode: AutovalidateMode.always,
+                  initialValue: '3',
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.sports_handball),
+                    labelText: 'Reps per Set',
+                    border: OutlineInputBorder(),
+                  ),
+                  onFieldSubmitted: (text) {
+                    reps = int.parse(text);
+                  },
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        int.tryParse(value) == null) {
+                      return "Please enter an integer.";
+                    }
+                    return null;
+                  })),
+          ListTile(
+              // alignment: const Alignment(0.0, 1.0),
+              title: DropdownButtonFormField<String>(
+            decoration: const InputDecoration(
+              icon: Icon(Icons.fitness_center),
+              labelText: 'Exercise',
+              border: OutlineInputBorder(),
+            ),
+            value: exercise,
+            items: <String>['Bench Press', 'Squat', 'Deadlift']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? value) {
+              setState(() {
+                exercise = value!;
+              });
+            },
+          )),
+          ListTile(
+              title: DropdownButtonFormField<String>(
+            value: audio,
+            decoration: const InputDecoration(
+              icon: Icon(Icons.record_voice_over),
+              labelText: 'Trainer Voice',
+              border: OutlineInputBorder(),
+            ),
+            items: <String>['American', 'British', 'Japanese']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? value) {
+              setState(() {
+                audio = value!;
+                // Navigator.pop(context, voice);
+              });
+            },
+          )),
+          ListTile(
+              title: TextFormField(
+                  autovalidateMode: AutovalidateMode.always,
+                  initialValue: '160',
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.accessibility_outlined),
+                    labelText: 'Arm Length',
+                    border: OutlineInputBorder(),
+                  ),
+                  onFieldSubmitted: (text) {
+                    arm = double.parse(text);
+                  },
+                  validator: (value) {
+                    if (value == null ||
+                        value.isEmpty ||
+                        double.tryParse(value) == null) {
+                      return "Please enter a length in meters.";
+                    }
+                    return null;
+                  })),
+        ],
+      )),
       body: Container(
           padding: const EdgeInsets.only(top: 20), child: _buildSuggestions()),
     );
