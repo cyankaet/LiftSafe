@@ -78,7 +78,7 @@ class _NavBarState extends State<NavBar> {
             labelText: 'Trainer Voice',
             border: OutlineInputBorder(),
           ),
-          items: <String>['American', 'British', 'Anime', 'test.wav']
+          items: <String>['American', 'British', 'Japanese']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
