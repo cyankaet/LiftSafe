@@ -70,10 +70,10 @@ class _LiftTrackerState extends State<LiftTracker> {
                   shape: CircleBorder(),
                   onPressed: _startRecording,
                   child: Padding(
-                    padding: const EdgeInsets.all(100),
+                    padding: const EdgeInsets.all(20),
                     child: Text(
                       '$textHolder',
-                      style: TextStyle(color: Colors.white, fontSize: 40),
+                      style: TextStyle(color: Colors.white, fontSize: 45),
                     ),
                   ),
                 )
