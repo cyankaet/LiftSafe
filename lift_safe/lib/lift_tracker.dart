@@ -29,7 +29,7 @@ class _LiftTrackerState extends State<LiftTracker> {
   Stopwatch _stopwatch = Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
-  String textHolder = (100).toString() + '%';
+  String textHolder = 'Start';
   changeText() {
     setState(() {
       textHolder =
@@ -153,13 +153,14 @@ class _LiftTrackerState extends State<LiftTracker> {
             onPressed: () => showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
-                title: const Text('AlertDialog Title'),
-                content: const Text('AlertDialog description'),
+                title: const Text('The Dangers of Ego Lifting'),
+                content: const Text('Ego lifting is when you try to build muscle mass by ' +
+                    'lifting more weight than you should at the gym. Although more weight sounds better, ' +
+                    'ego lifting actually slows down your progress and can lead to injury. Our app aims to ' +
+                    'help you prevent ego lifting by ensuring you are not lifting too quickly. Simply strap ' +
+                    'the phone to your bar, press the blue button to start and again to stop, enter your rep count in the sidebar, and you will ' +
+                    'see the percentage of your lifts that were good, as well as an audio warning when you lift incorrectly'),
                 actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'Cancel'),
-                    child: const Text('Cancel'),
-                  ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, 'OK'),
                     child: const Text('OK'),
