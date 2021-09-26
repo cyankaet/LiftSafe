@@ -70,6 +70,7 @@ flutter:
     - assets/just-do-it.mp3
     - assets/you-donkey.mp3
     - assets/absolutely-pathetic.mp3
+    - assets/1-second-of-silence.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

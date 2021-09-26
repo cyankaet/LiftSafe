@@ -16,7 +16,8 @@ class _LiftTrackerState extends State<LiftTracker> {
   final Map audioFiles = {
     'American': 'just-do-it.mp3',
     'British': 'you-donkey.mp3',
-    'Japanese': 'test.wav'
+    'Japanese': 'test.wav',
+    'None': '1-second-of-silence.mp3'
   };
   List<double>? _userAccelerometerValues;
   List<double>? _gyroscopeValues;
@@ -234,7 +235,7 @@ class _LiftTrackerState extends State<LiftTracker> {
               labelText: 'Trainer Voice',
               border: OutlineInputBorder(),
             ),
-            items: <String>['American', 'British', 'Japanese']
+            items: <String>['American', 'British', 'Japanese', 'None']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
