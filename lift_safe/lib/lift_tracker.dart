@@ -27,6 +27,13 @@ class _LiftTrackerState extends State<LiftTracker> {
   Stopwatch _stopwatch = Stopwatch();
   final _streamSubscriptions = <StreamSubscription<dynamic>>[];
   String buttonText = "Start Recording";
+  String textHolder = (100.0).toString() + '%';
+  changeText() {
+    setState(() {
+      textHolder = ((numReps - numEgo) / numReps).toString() + "%";
+    });
+  }
+
   String motivation = "";
   String audio = "test.wav";
 
@@ -37,6 +44,9 @@ class _LiftTrackerState extends State<LiftTracker> {
   int counter = 0;
   bool start = false;
   static AudioCache player = AudioCache();
+
+  final ButtonStyle style =
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   Widget _buildSuggestions() {
     final List<String>? userAccelerometer = _userAccelerometerValues
@@ -53,29 +63,19 @@ class _LiftTrackerState extends State<LiftTracker> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("LiftSafe",
-                    textScaleFactor: 5.0,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                _accelVal(userAccelerometer?[0], gyroscope?[0]),
-                _accelVal(userAccelerometer?[1], gyroscope?[1]),
-                _accelVal(userAccelerometer?[2], gyroscope?[2]),
-                Text("Min Distance: $minDist"),
-                Text("Reps: $numReps"),
-                Text(motivation),
-                TextButton(child: Text(buttonText), onPressed: _startRecording),
-                TextButton(
-                    child: Text(audio),
-                    onPressed: () {
-                      _getAudio(context);
-                      player.play(audio);
-                    }),
-                IconButton(
-                  icon: start
-                      ? Icon(Icons.pause_circle_outline, size: 70)
-                      : Icon(Icons.play_circle_outline, size: 70),
-                  onPressed: () {
-                    start = !start;
-                  },
+                MaterialButton(
+                  height: 350,
+                  minWidth: 350,
+                  color: Colors.blue,
+                  shape: CircleBorder(),
+                  onPressed: _startRecording,
+                  child: Padding(
+                    padding: const EdgeInsets.all(100),
+                    child: Text(
+                      '$textHolder',
+                      style: TextStyle(color: Colors.white, fontSize: 50),
+                    ),
+                  ),
                 )
               ],
             ),
@@ -190,7 +190,7 @@ class _LiftTrackerState extends State<LiftTracker> {
         if (_velocities[_velocities.length - 1].abs() > 0.2 && inRep == false) {
           timeSinceRepStart = _times[_times.length - 1];
           numReps++;
-          //CALL MY FUNCTION
+          changeText();
           counter = 0;
           inRep = true;
           motivation = "";
@@ -203,7 +203,7 @@ class _LiftTrackerState extends State<LiftTracker> {
             if (_times[_times.length - 1] - timeSinceRepStart < 3000000) {
               motivation = "You can dew it!!!";
               numEgo++;
-              //CALL MY FUNCTION
+              changeText();
               if (!audioPlayed) {
                 player.play("test.wav");
                 audioPlayed = true;
