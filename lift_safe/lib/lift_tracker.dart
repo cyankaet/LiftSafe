@@ -82,6 +82,12 @@ class _LiftTrackerState extends State<LiftTracker> {
                     ),
                   ),
                 ),
+                OutlinedButton(
+                  onPressed: () {
+                    _getAudio(context);
+                  },
+                  child: Text("Pick Trainer Voice"),
+                ),
               ],
             ),
           ),
